@@ -10,23 +10,41 @@ import { useConvex } from 'convex/react'
 import { api } from '@/convex/_generated/api'
 import { SidebarProvider } from '@/components/ui/sidebar'
 import AppSideBar from '@/components/custom/AppSideBar'
+import { usePathname } from 'next/navigation'
 
 function Provider({children}) {
-    const [messages,setMessages]=useState();
-    const [userDetail,setUserDetail]=useState();
+    const [messages,setMessages]=useState([]);
+    const [userDetail,setUserDetail]=useState(null);
     const convex=useConvex();
+    const pathname = usePathname();
+    
+    // Check if current path is a workspace path
+    const isWorkspacePath = pathname?.includes('/workspace/');
 
-    useEffect(()=>{
+    useEffect(()=> {
+        try {
+            const storedUser = localStorage.getItem('user');
+            if (storedUser) {
+                const parsedUser = JSON.parse(storedUser);
+                setUserDetail(parsedUser);
+            }
+        } catch (error) {
+            console.error("Error retrieving user from localStorage:", error);
+        }
+    }, []);
+
+    useEffect(()=> {
         IsAuthanticated();
-
-    },[])
+    }, []);
 
     const IsAuthanticated = async () => {
-        if(typeof window !== 'undefined') {  // Corrected condition
-            const user = JSON.parse(localStorage.getItem('user'))
-            const result = await convex.query(api.users.GetUser, {email: user?.email});
-            setUserDetail(result);  // Move this inside the if block
-            console.log(result);
+        if(typeof window !== 'undefined') {
+            const user = JSON.parse(localStorage.getItem('user'));
+            if (user && user.email) {
+                const result = await convex.query(api.users.GetUser, {email: user.email});
+                setUserDetail(result);
+                console.log(result);
+            }
         }
     }
   return (
@@ -40,9 +58,9 @@ function Provider({children}) {
           enableSystem
           disableTransitionOnChange
         >
-            <Header/>
-            <SidebarProvider defaultOpen={false}> 
-              <AppSideBar/>
+            
+            <SidebarProvider defaultOpen={isWorkspacePath}> 
+              {isWorkspacePath && <AppSideBar/>}
         {children}
         </SidebarProvider>
         </NextThemesProvider>

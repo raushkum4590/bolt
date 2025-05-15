@@ -7,7 +7,10 @@ export default defineSchema({
         email:v.string(),
         picture:v.string(),
         uid:v.string(),
-        token:v.optional(v.number())
+        token:v.optional(v.number()),
+        dailyTokenLimit:v.optional(v.number()),
+        dailyTokensUsed:v.optional(v.number()),
+        lastTokenRefresh:v.optional(v.string())
     }),
     workspace:defineTable({
         messages:v.any(),
