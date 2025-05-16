@@ -11,7 +11,6 @@ import { api } from "@/convex/_generated/api";
 import { useRouter } from "next/navigation";
 import { UserDetailContext } from '@/context/UserDetailContext'
 import { useIsMobile } from "@/hooks/use-mobile";
-import ReCAPTCHA from "react-google-recaptcha";
 
 function Hero() {
   const [userInput, setUserInput] = useState();
@@ -218,8 +217,7 @@ function Hero() {
                           <p className="text-blue-400">Verifying...</p>
                         </div>
                       </div>
-                    )}
-                    
+                    )}                    
                     {verifySucess && (
                       <div className="absolute inset-0 bg-gray-900/90 backdrop-blur-sm flex items-center justify-center rounded-md z-10 transition-all duration-300">
                         <div className="flex flex-col items-center">
@@ -231,14 +229,13 @@ function Hero() {
                       </div>
                     )}
                     
-                    <div className="recaptcha-container transform scale-110 md:scale-125 lg:scale-150">
-                      <ReCAPTCHA
-                        sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
-                        onChange={onCaptchaChange}
-                        theme="dark"
-                        size="normal"
-                        className="recaptcha-badge"
-                      />
+                    <div className="flex flex-col items-center justify-center">
+                      <button
+                        onClick={() => onCaptchaChange(true)}
+                        className="px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white rounded-lg transition-all duration-300"
+                      >
+                        I'm not a robot
+                      </button>
                     </div>
                   </div>
                   
@@ -250,11 +247,10 @@ function Hero() {
                     className="mt-4 w-full py-3 px-4 bg-gradient-to-r from-gray-700 to-gray-800 border border-gray-700 rounded-lg text-gray-300 hover:text-white hover:from-gray-600 hover:to-gray-700 transition-all duration-300 font-medium flex items-center justify-center"
                   >
                     Cancel Verification
-                  </button>
-                </div>
+                  </button>                </div>
                 
                 <p className="text-xs text-gray-500 text-center max-w-md mx-auto">
-                  This site is protected by reCAPTCHA and the Google <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:text-blue-400 transition-colors">Privacy Policy</a> and <a href="https://policies.google.com/terms" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:text-blue-400 transition-colors">Terms of Service</a> apply.
+                  By continuing, you agree to our <a href="#" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:text-blue-400 transition-colors">Privacy Policy</a> and <a href="#" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:text-blue-400 transition-colors">Terms of Service</a>.
                 </p>
               </div>
             </div>
