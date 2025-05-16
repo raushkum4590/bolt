@@ -30,8 +30,7 @@ function Hero() {
     api.users.GetUser,
     userEmail ? { email: userEmail } : "skip"
   );
-  
-  // Load email from local storage on component mount
+    // Load email from local storage on component mount
   useEffect(() => {
     try {
       const storedUser = localStorage.getItem('user');
@@ -53,6 +52,17 @@ function Hero() {
       setCaptchaVerified(true);
     }
   }, []);
+  
+  // Check for existing user when component mounts or when userDetail changes
+  useEffect(() => {
+    // If userDetail is already set with an ID, we're already authenticated
+    if (userDetail && userDetail._id) {
+      // Close the dialog if it's open
+      if (openDialog) {
+        setOpenDialog(false);
+      }
+    }
+  }, [userDetail, openDialog]);
   
   const onCaptchaChange = (value) => {
     if (value) {
@@ -87,8 +97,7 @@ function Hero() {
       }, 500);
     }
   };
-  
-  const onGenerateAfterVerification = async (input) => {
+    const onGenerateAfterVerification = async (input) => {
     let currentUserDetail = userDetail;
     
     if (!currentUserDetail || !currentUserDetail._id) {
@@ -120,8 +129,12 @@ function Hero() {
       }
     }
     
+    // Only show the dialog if the user is not authenticated after trying to fetch details
     if (!currentUserDetail || !currentUserDetail._id) {
-      setOpenDialog(true);
+      // Check if dialog is not already open to prevent multiple instances
+      if (!openDialog) {
+        setOpenDialog(true);
+      }
       return;
     }
   

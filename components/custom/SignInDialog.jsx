@@ -59,10 +59,8 @@ function SignInDialog({ openDialog, closeDialog }) {
             setError("Authentication failed. Please try again.");
             setIsLoading(false);
         },
-    });
-
-    return (
-        <Dialog open={openDialog} onOpenChange={closeDialog}>
+    });    return (
+        <Dialog open={openDialog && (!userDetail || !userDetail._id)} onOpenChange={closeDialog}>
             <DialogContent className="sm:max-w-md border border-gray-700 shadow-lg">
                 <DialogHeader>
                     <DialogTitle className="text-2xl font-bold text-center bg-gradient-to-r from-blue-500 to-purple-600 bg-clip-text text-transparent">

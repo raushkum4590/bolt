@@ -35,15 +35,24 @@ function Provider({children}) {
 
     useEffect(()=> {
         IsAuthanticated();
-    }, []);
-
-    const IsAuthanticated = async () => {
+    }, []);    const IsAuthanticated = async () => {
         if(typeof window !== 'undefined') {
             const user = JSON.parse(localStorage.getItem('user'));
             if (user && user.email) {
-                const result = await convex.query(api.users.GetUser, {email: user.email});
-                setUserDetail(result);
-                console.log(result);
+                try {
+                    const result = await convex.query(api.users.GetUser, {email: user.email});
+                    if (result && result._id) {
+                        setUserDetail(result);
+                        console.log("User authenticated:", result);
+                    } else {
+                        console.log("User not found in database");
+                        // Clear invalid user from localStorage
+                        localStorage.removeItem('user');
+                        setUserDetail(null);
+                    }
+                } catch (error) {
+                    console.error("Error querying user:", error);
+                }
             }
         }
     }
