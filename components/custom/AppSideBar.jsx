@@ -4,7 +4,7 @@ import {
     SidebarFooter,
     SidebarGroup,
     SidebarHeader,
-  } from "@/components/ui/sidebar"
+  } from "./CustomSidebar"
 import Image from "next/image"
 import React from 'react'
 import { Button } from "../ui/button"

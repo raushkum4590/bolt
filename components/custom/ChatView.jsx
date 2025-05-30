@@ -11,7 +11,7 @@ import { ArrowRight, ArrowUpCircle, Bot, LinkIcon, Loader2Icon, SendHorizontal, 
 import Image from 'next/image';
 import { useParams, useRouter } from 'next/navigation'
 import React, { useContext, useEffect, useRef, useState } from 'react'
-import { useSidebar } from '../ui/sidebar';
+import { useSidebar } from './CustomSidebar';
 import { Button } from '../ui/button';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '../ui/dialog';
 
@@ -213,107 +213,136 @@ function ChatView() {
             
             <div className="flex-1 overflow-y-auto scrollbar-hide p-4">
                 {messages?.length > 0 ? (
-                    <div className="flex flex-col gap-6">
-                        {messages.map((msg, index) => (
+                    <div className="flex flex-col gap-6">                        {messages.map((msg, index) => (
                             <div 
                                 key={index} 
-                                className={`flex gap-3 items-start max-w-full animate-in fade-in slide-in-from-bottom-5 duration-300 ${msg?.role === 'user' ? '' : 'opacity-90'}`}
+                                className={`flex gap-4 items-start max-w-full animate-in fade-in slide-in-from-bottom-5 duration-500 ${msg?.role === 'user' ? '' : 'opacity-95'}`}
                                 style={{ animationDelay: `${index * 0.1}s` }}
                             >
                                 <div className="flex-shrink-0 mt-1">
                                     {msg?.role === 'user' ? (
                                         userDetail?.picture ? (
-                                            <Image 
-                                                src={userDetail.picture} 
-                                                alt="User" 
-                                                width={32} 
-                                                height={32} 
-                                                className="rounded-full border-2 border-blue-500/50" 
-                                            />
+                                            <div className="relative p-0.5 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 shadow-lg">
+                                                <Image 
+                                                    src={userDetail.picture} 
+                                                    alt="User" 
+                                                    width={32} 
+                                                    height={32} 
+                                                    className="rounded-full bg-gray-900" 
+                                                />
+                                            </div>
                                         ) : (
-                                            <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center">
+                                            <div className="w-8 h-8 rounded-full bg-gradient-to-r from-blue-500 to-blue-600 flex items-center justify-center shadow-lg shadow-blue-500/25">
                                                 <User size={16} className="text-white" />
                                             </div>
                                         )
                                     ) : (
-                                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center">
+                                        <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 via-blue-500 to-cyan-500 flex items-center justify-center shadow-lg shadow-purple-500/25 animate-pulse">
                                             <Bot size={16} className="text-white" />
                                         </div>
                                     )}
                                 </div>
-                                <div className={`py-3 px-4 rounded-lg leading-relaxed ${
+                                <div className={`group relative py-4 px-6 rounded-2xl leading-relaxed shadow-lg backdrop-blur-sm transition-all duration-300 hover:shadow-xl ${
                                     msg?.role === 'user' 
-                                        ? 'bg-blue-900/20 border border-blue-500/30' 
-                                        : 'bg-gray-800/70 border border-gray-700/50'
-                                }`}>
-                                    <div className="prose prose-invert prose-sm max-w-none">
+                                        ? 'bg-gradient-to-br from-blue-900/40 to-blue-800/40 border border-blue-500/30 hover:border-blue-400/50 max-w-[85%] ml-auto' 
+                                        : 'bg-gradient-to-br from-gray-800/60 to-gray-900/60 border border-gray-700/50 hover:border-gray-600/50 max-w-[90%]'
+                                } before:absolute before:inset-0 before:rounded-2xl before:bg-gradient-to-br before:from-white/5 before:to-transparent before:pointer-events-none`}>
+                                    <div className="prose prose-invert prose-sm max-w-none relative z-10">
                                         {msg.content}
                                     </div>
+                                    {msg?.role === 'assistant' && (
+                                        <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                                            <button className="p-1 rounded-md hover:bg-white/10 transition-colors">
+                                                <LinkIcon size={12} className="text-gray-400" />
+                                            </button>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         ))}
-                        
-                        {loading && (
-                            <div className="flex gap-3 items-start animate-in fade-in duration-300">
+                          {loading && (
+                            <div className="flex gap-4 items-start animate-in fade-in duration-500">
                                 <div className="flex-shrink-0 mt-1">
-                                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-purple-500 flex items-center justify-center">
+                                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 via-blue-500 to-cyan-500 flex items-center justify-center shadow-lg shadow-purple-500/25 animate-pulse">
                                         <Bot size={16} className="text-white" />
                                     </div>
                                 </div>
-                                <div className="py-4 px-5 rounded-lg bg-gray-800/70 border border-gray-700/50 flex items-center gap-2">
-                                    <Loader2Icon className="animate-spin h-4 w-4 text-blue-400" />
-                                    <span className="text-sm text-gray-300">Thinking...</span>
+                                <div className="py-4 px-6 rounded-2xl bg-gradient-to-br from-gray-800/60 to-gray-900/60 border border-gray-700/50 backdrop-blur-sm shadow-lg flex items-center gap-3">
+                                    <div className="flex space-x-1">
+                                        <div className="w-2 h-2 bg-blue-400 rounded-full animate-bounce" style={{animationDelay: '0ms'}}></div>
+                                        <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style={{animationDelay: '150ms'}}></div>
+                                        <div className="w-2 h-2 bg-cyan-400 rounded-full animate-bounce" style={{animationDelay: '300ms'}}></div>
+                                    </div>
+                                    <span className="text-sm text-gray-300 ml-2">AI is thinking...</span>
                                 </div>
                             </div>
                         )}
                         <div ref={messagesEndRef} />
-                    </div>
-                ) : (
+                    </div>                ) : (
                     <div className="h-full flex flex-col items-center justify-center text-center p-8">
-                        <div className="w-16 h-16 rounded-full bg-blue-900/20 flex items-center justify-center mb-4 border border-blue-500/30">
-                            <Bot size={24} className="text-blue-400" />
+                        <div className="relative mb-6">
+                            <div className="w-20 h-20 rounded-full bg-gradient-to-br from-blue-500/20 to-purple-500/20 flex items-center justify-center mb-4 border border-blue-500/30 backdrop-blur-sm">
+                                <Bot size={32} className="text-blue-400" />
+                            </div>
+                            <div className="absolute -top-1 -right-1 w-6 h-6 bg-gradient-to-r from-green-400 to-blue-500 rounded-full flex items-center justify-center shadow-lg">
+                                <span className="text-xs">✨</span>
+                            </div>
                         </div>
-                        <h3 className="text-lg font-medium text-gray-300 mb-2">Start a new conversation</h3>
-                        <p className="text-sm text-gray-400 max-w-xs">
-                            Ask me anything about your project, code, or development questions.
+                        <h3 className="text-xl font-semibold bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent mb-3">
+                            Start a new conversation
+                        </h3>
+                        <p className="text-sm text-gray-400 max-w-sm leading-relaxed">
+                            Ask me anything about your project, code, or development questions. I'm here to help you build amazing things!
                         </p>
+                        <div className="flex flex-wrap gap-2 mt-6">
+                            {[
+                                "💡 Generate ideas",
+                                "🔧 Debug code", 
+                                "🎨 Create UI",
+                                "📖 Explain concepts"
+                            ].map((suggestion, i) => (
+                                <div key={i} className="px-3 py-1.5 bg-gray-800/60 border border-gray-700/50 rounded-full text-xs text-gray-300 backdrop-blur-sm">
+                                    {suggestion}
+                                </div>
+                            ))}
+                        </div>
                     </div>
                 )}
-            </div>
-
-            <div className="p-4 border-t border-gray-800 bg-black/20 rounded-b-xl">
+            </div>            <div className="p-4 border-t border-gray-800/50 bg-gradient-to-r from-gray-900/90 to-black/90 backdrop-blur-xl rounded-b-xl">
                 <div className="flex gap-3 items-end">
                     {userDetail && (
                         <button 
                             onClick={toggleSidebar}
-                            className="flex-shrink-0 transition-transform hover:scale-105"
+                            className="flex-shrink-0 transition-all hover:scale-105 duration-300 group"
                         >
-                            <Image 
-                                src={userDetail?.picture} 
-                                alt="userImage" 
-                                width={32} 
-                                height={32} 
-                                className="rounded-full border border-blue-500/50 cursor-pointer" 
-                            />
+                            <div className="relative p-0.5 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 shadow-lg group-hover:shadow-blue-500/25">
+                                <Image 
+                                    src={userDetail?.picture} 
+                                    alt="userImage" 
+                                    width={32} 
+                                    height={32} 
+                                    className="rounded-full bg-gray-900 cursor-pointer" 
+                                />
+                            </div>
                         </button>
                     )}
                     
-                    <div className="relative flex-1 rounded-lg border border-gray-700 focus-within:border-blue-500/50 transition-all bg-black/30 shadow-inner overflow-hidden">
-                        <textarea
+                    <div className="relative flex-1 rounded-xl border border-gray-700/50 focus-within:border-blue-500/50 focus-within:shadow-lg focus-within:shadow-blue-500/10 transition-all bg-gradient-to-r from-gray-900/50 to-black/50 backdrop-blur-sm overflow-hidden group">
+                        <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-purple-500/5 opacity-0 group-focus-within:opacity-100 transition-opacity duration-300"></div>                        <textarea
                             placeholder={Lookup.INPUT_PLACEHOLDER}
                             value={userInput}
                             onChange={(event) => setUserInput(event.target.value)}
                             onKeyDown={handleKeyDown}
-                            className="outline-none bg-transparent w-full py-3 px-4 text-sm max-h-32 min-h-[60px] resize-none text-gray-100 placeholder:text-gray-500"
+                            className="outline-none bg-transparent w-full py-4 px-5 text-sm max-h-32 min-h-[60px] resize-none text-gray-100 placeholder:text-gray-500 relative z-10"
                             rows={1}
                         />
                         
-                        <div className="absolute right-2 bottom-2 flex space-x-1">
+                        <div className="absolute right-3 bottom-3 flex space-x-2 z-10">
                             {userInput && (
                                 <Button
                                     onClick={() => onGenerate(userInput)}
                                     size="icon"
-                                    className="h-8 w-8 rounded-full bg-blue-600 hover:bg-blue-500 text-white"
+                                    className="h-9 w-9 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 transition-all duration-300 hover:scale-105 border-0"
                                 >
                                     <SendHorizontal className="h-4 w-4" />
                                 </Button>

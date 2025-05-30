@@ -8,7 +8,7 @@ import { UserDetailContext } from '@/context/UserDetailContext'
 import { GoogleOAuthProvider } from '@react-oauth/google'
 import { useConvex } from 'convex/react'
 import { api } from '@/convex/_generated/api'
-import { SidebarProvider } from '@/components/ui/sidebar'
+import { SidebarProvider, SidebarInset } from '@/components/custom/CustomSidebar'
 import AppSideBar from '@/components/custom/AppSideBar'
 import { usePathname } from 'next/navigation'
 
@@ -65,13 +65,13 @@ function Provider({children}) {
           attribute="class"
           defaultTheme="dark"
           enableSystem
-          disableTransitionOnChange
-        >
-            
+          disableTransitionOnChange        >
             <SidebarProvider defaultOpen={isWorkspacePath}> 
               {isWorkspacePath && <AppSideBar/>}
-        {children}
-        </SidebarProvider>
+              <SidebarInset>
+                {children}
+              </SidebarInset>
+            </SidebarProvider>
         </NextThemesProvider>
         </MessagesContext.Provider>
         </UserDetailContext.Provider>

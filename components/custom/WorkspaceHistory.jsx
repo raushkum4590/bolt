@@ -5,7 +5,7 @@ import { useConvex } from 'convex/react'
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import React, { useContext, useEffect, useState } from 'react'
-import { useSidebar } from '../ui/sidebar';
+import { useSidebar } from './CustomSidebar';
 import { FileText, Loader2, MessageSquare, Plus, RefreshCw, Search } from 'lucide-react';
 
 function WorkspaceHistory() {
